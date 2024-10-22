@@ -7,10 +7,10 @@ function createBoard() { // Function to create the board
             cell.classList.add('cell'); // Add the 'cell' class 
             
             // Check if the cell should be dark
-            if ((row + col) % 2 === 1) { // Fix the placement of % 2
+            if ((row + col) % 2 === 1) { // Correct check for dark cells
                 cell.classList.add('dark'); // Add 'dark' class if it's a dark square
             }
-            board.appendChild(cell); // Fix the spelling: should be 'appendChild'
+            board.appendChild(cell); // Correctly append the cell to the board
         }
     }
 }
