@@ -1,39 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=2/0">
-        <title>Russian Checkers</title>
-        <style>
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                background-color:#f0f0f0;
-            }
-            #board {
-                display: grid;
-                grid-template-columns: repeat(8, 1fr);
-                width: 400px;
-                height: 400px;
-            }
-            .cell {
-                width: 50px;
-                height: 50px;
-                background-color: #fff;
-                border: 1px solid #000;
-            }
-            .dark {
-                Background-color: #654321;
-            }
-        
-        </style>
-
-    </head>
-    <body>
-        <div id="Board"></div>
-        <script src="script.js"></script>
-
-    </body>
-    </html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russian Checkers</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            width: 400px;
+            height: 400px;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #000;
+        }
+        .light {
+            background-color: #ddd; /* Light gray */
+        }
+        .dark {
+            background-color: #654321; /* Dark brown */
+        }
+        .piece {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Circular pieces */
+        }
+        .black {
+            background-color: black;
+        }
+        .white {
+            background-color: white;
+        }
+        .selected {
+            border: 2px solid yellow; /* Highlight selected piece */
+        }
+    </style>
+</head>
+<body>
+    <div id="board"></div>
+    <script src="script.js"></script>
+</body>
+</html>
