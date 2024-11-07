@@ -6,10 +6,20 @@ let gameTimer = null;
 let startTime = null;
 let timeElapsed = 0;
 let isGameStarted = false;
+let timerDisplay = document.getElementById('timer');
 
 // Toggle menu visibility
 document.getElementById('menuButton').addEventListener('click', () => {
     document.getElementById('menu').classList.toggle('active');
+});
+
+// Close the menu when clicking anywhere outside of the menu
+document.addEventListener('click', (event) => {
+    const menu = document.getElementById('menu');
+    const menuButton = document.getElementById('menuButton');
+    if (!menu.contains(event.target) && !menuButton.contains(event.target)) {
+        menu.classList.remove('active');
+    }
 });
 
 // Initialize the board
@@ -55,6 +65,32 @@ function createBoard() {
             board.appendChild(cell);
         }
     }
+
+    // Label rows and columns
+    labelBoard();
+}
+
+// Labeling the board with numbers (1-8) and letters (A-H)
+function labelBoard() {
+    const rowLabels = document.getElementById('rowLabels');
+    const colLabels = document.getElementById('colLabels');
+
+    // Row labels (1-8)
+    rowLabels.innerHTML = '';
+    for (let i = 8; i >= 1; i--) {
+        const label = document.createElement('span');
+        label.textContent = i;
+        rowLabels.appendChild(label);
+    }
+
+    // Column labels (A-H)
+    colLabels.innerHTML = '';
+    const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    columns.forEach(col => {
+        const label = document.createElement('span');
+        label.textContent = col;
+        colLabels.appendChild(label);
+    });
 }
 
 // Handle piece selection and movement
