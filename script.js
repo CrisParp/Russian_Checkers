@@ -1,8 +1,9 @@
-const board = document.getElementById('board');
-const timerDisplay = document.getElementById('timer');
+// Declare game state variables
+let board = document.getElementById('board');
 let selectedPiece = null;
-let currentPlayer = 'black'; // Default starting player
+let currentPlayer = 'white';  // Default starting player: White starts first
 let gameTimer = null;
+let startTime = null;
 let timeElapsed = 0;
 let isGameStarted = false;
 
@@ -24,9 +25,9 @@ function createBoard() {
         ['w', 'w', 'w', 'w', '', 'w', 'w', 'w']
     ];
 
-    board.innerHTML = ''; // Clear the board
+    board.innerHTML = ''; // Clear any existing board
 
-    // Add cells and pieces
+    // Create the grid and add pieces
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
             const cell = document.createElement('div');
@@ -34,7 +35,8 @@ function createBoard() {
             cell.dataset.row = row;
             cell.dataset.col = col;
 
-            if ((row + col) % 2 !== 0) {  // Only place pieces on dark squares
+            // Place pieces on dark squares
+            if ((row + col) % 2 !== 0) {
                 if (pieces[row][col] === 'b') {
                     const piece = document.createElement('div');
                     piece.classList.add('piece', 'black');
@@ -56,11 +58,10 @@ function createBoard() {
 }
 
 // Handle piece selection and movement
-board.addEventListener('click', handleClick);
-
-function handleClick(event) {
+board.addEventListener('click', (event) => {
     const target = event.target;
 
+    // Handle piece selection
     if (target.classList.contains('piece')) {
         if (selectedPiece) {
             selectedPiece.classList.remove('selected');
@@ -68,15 +69,21 @@ function handleClick(event) {
         selectedPiece = target;
         selectedPiece.classList.add('selected');
         highlightValidMoves(target);
-    } else if (selectedPiece && target.classList.contains('cell') && target.classList.contains('dark')) {
-        if (!target.hasChildNodes()) {  // Move only to empty, dark cells
+    }
+    // Handle piece movement
+    else if (selectedPiece && target.classList.contains('cell') && target.classList.contains('dark')) {
+        if (!target.hasChildNodes()) {  // Only move to empty cells
             movePiece(target);
         }
-    } else {
-        clearHighlights(); // Clear highlights if clicked elsewhere
     }
-}
+    // Deselect piece if clicking elsewhere
+    else {
+        clearHighlights();
+        selectedPiece = null;
+    }
+});
 
+// Highlight valid moves for the selected piece
 function highlightValidMoves(piece) {
     const isBlack = piece.classList.contains('black');
     const row = parseInt(piece.dataset.row);
@@ -98,43 +105,62 @@ function highlightValidMoves(piece) {
     });
 }
 
-function clearHighlights() {
-    document.querySelectorAll('.valid-move').forEach(cell => {
-        cell.classList.remove('valid-move');
-    });
-}
+// Move the selected piece to the target cell
+function movePiece(target) {
+    const piece = selectedPiece;
+    const targetCell = target;
 
-function movePiece(targetCell) {
-    targetCell.appendChild(selectedPiece);
-    selectedPiece.classList.remove('selected');
+    // Move the piece
+    targetCell.appendChild(piece);
+    piece.classList.remove('selected');
+    piece.dataset.row = target.dataset.row;
+    piece.dataset.col = target.dataset.col;
+
+    // Switch player
+    currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+
+    // Update the timer and highlight turns
+    updateTimer();
     clearHighlights();
-
-    if (!isGameStarted) startTimer();
-
-    selectedPiece.dataset.row = targetCell.dataset.row;
-    selectedPiece.dataset.col = targetCell.dataset.col;
-
-    currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+    selectedPiece = null;
 }
 
+// Clear valid move highlights
+function clearHighlights() {
+    const cells = board.getElementsByClassName('cell');
+    for (let cell of cells) {
+        cell.classList.remove('valid-move');
+    }
+}
+
+// Timer function
 function startTimer() {
-    isGameStarted = true;
+    if (!startTime) {
+        startTime = Date.now();
+    }
+
     gameTimer = setInterval(() => {
-        timeElapsed++;
-        timerDisplay.textContent = `Time: ${timeElapsed}s`;
+        timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(timeElapsed / 60);
+        const seconds = timeElapsed % 60;
+        timerDisplay.textContent = `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
     }, 1000);
 }
 
-document.getElementById('resetButton').addEventListener('click', resetGame);
-
-function resetGame() {
+// Handle reset game button
+document.getElementById('resetButton').addEventListener('click', () => {
     createBoard();
-    currentPlayer = 'black';
-    clearInterval(gameTimer);
+    clearHighlights();
+    selectedPiece = null;
+    currentPlayer = 'white';
     timeElapsed = 0;
-    timerDisplay.textContent = `Time: ${timeElapsed}s`;
+    startTime = null;
+    clearInterval(gameTimer);
+    timerDisplay.textContent = 'Time: 0:00';
     isGameStarted = false;
-}
+    startTimer();
+});
 
-// Initialize game on load
+// Initialize the game
 createBoard();
+startTimer(); // Start the timer as soon as the game starts
